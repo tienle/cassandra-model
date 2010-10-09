@@ -13,7 +13,7 @@ module CassandraModel
       end  
 
       def column(name, type = :string)
-        #columns[name] = type
+        columns[name] = type
         class_eval "def #{name}; #{type.capitalize}Type.load(@attributes[:#{name}]); end"
 
         if [:string, :integer, :float, :datetime].include?(type)
@@ -32,9 +32,9 @@ module CassandraModel
         @validation
       end
 
-      #def columns
-      #  @columns ||= {}
-      #end
+      def columns
+        @columns ||= {}
+      end
 
       private
 

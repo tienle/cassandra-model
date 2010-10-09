@@ -23,6 +23,13 @@ class CassandraModelCallbacksTest < Test::Unit::TestCase
       assert_kind_of Cassandra, @klass.connection
     end
 
+    should "store all defined columns" do
+      assert_equal({:name => :string  , \
+                    :age  => :integer , \
+                    :dob  => :datetime, \
+                    :note => :json}   , @klass.columns)
+    end
+
     should "validate model by provided block" do
       assert_kind_of Proc, @klass.validation
       model = @klass.new()
