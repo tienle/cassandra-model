@@ -1,9 +1,10 @@
 module CassandraModel
   class Base
     extend Forwardable
+    include CassandraModel::Callbacks
 
     def_delegators :self.class, :connection, :connection=
-    # define_model_callbacks :save, :create, :update, :destroy
+    define_callbacks :save, :create, :update, :destroy
 
     class << self
       attr_accessor :connection
@@ -63,7 +64,7 @@ module CassandraModel
     end
 
     def new_record?
-      @new_record
+      @new_record || false
     end
 
   end
