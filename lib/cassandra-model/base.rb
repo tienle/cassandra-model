@@ -2,6 +2,7 @@ module CassandraModel
   class Base
     extend Forwardable
     include CassandraModel::Callbacks
+    include CassandraModel::Persistence
 
     def_delegators :self.class, :connection, :connection=
     define_callbacks :save, :create, :update, :destroy
@@ -12,6 +13,14 @@ module CassandraModel
       def establish_connection(*args)
         @connection = Cassandra.new(*args)
       end  
+      
+      def column_family(name = nil)
+        @column_family || (@column_family = name || self.name.split('::').last)
+      end
+
+      def key(name)
+        class_eval "def #{name}=(value); @key = value.to_s; end"
+      end
 
       def column(name, type = :string)
         columns[name] = type
@@ -36,22 +45,17 @@ module CassandraModel
       def columns
         @columns ||= {}
       end
-
-      private
-
-      def inherited(child)
-        child.instance_variable_set('@connection', @connection)
-        super
-      end
     end
 
-    attr_reader :attributes, :errors
+    attr_accessor :new_record
+    attr_reader :key, :attributes, :errors
 
     def initialize(attrs={})
       @new_record = true
       @errors     = []
       @attributes = {}
-      self.attributes = attrs unless attrs.empty?
+      @attributes = {}
+      attributes  = attrs unless attrs.empty?
     end
 
     def attributes=(attrs)
@@ -64,9 +68,8 @@ module CassandraModel
     end
 
     def new_record?
-      @new_record || false
+      @new_record
     end
-
   end
 
 end
