@@ -35,6 +35,7 @@ module CassandraModel
 
     module ClassMethods
       attr_accessor :write_consistency_level, :read_consistency_level
+
       def get(key, options = {})
         new(connection.get(key, options)).tap do |object|
           object.key = key
@@ -42,11 +43,7 @@ module CassandraModel
         end
       end
 
-      def multi_get(keys, options = {})
-
-      end
-
-      def all(keyrange = ''..'', options {})
+      def all(keyrange = ''..'', options = {})
         results = connection.get_range(column_family, :start => keyrange.first,
                                        :finish => keyrange.last, :count => (options[:limit] || 100))
         keys = results.map(&:key)

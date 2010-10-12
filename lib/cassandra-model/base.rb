@@ -50,12 +50,12 @@ module CassandraModel
     attr_accessor :new_record
     attr_reader :key, :attributes, :errors
 
-    def initialize(attrs={})
+    def initialize(attrs = {})
       @new_record = true
       @errors     = []
       @attributes = {}
       @attributes = {}
-      attributes  = attrs unless attrs.empty?
+      self.attributes  = attrs unless attrs.empty?
     end
 
     def attributes=(attrs)

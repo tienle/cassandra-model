@@ -10,7 +10,7 @@ module CassandraModel
         callbacks.each do |callback|
           [:before, :after].each do |chain|
             callback_name = "#{chain}_#{callback}"
-            instance_eval <<-EVAL, __FILE__, __LINE__+1
+            instance_eval <<-EVAL, __FILE__, __LINE__ + 1
               def #{callback_name}(*args)
                 callbacks[:#{callback_name}] += args 
               end

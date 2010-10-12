@@ -1,9 +1,6 @@
 require 'cassandra'
 require 'forwardable'
 require 'date'
-# require 'active_support/basic_object'
-# require 'active_support/json'
-# require 'active_model'
 
 $:.unshift(File.dirname(__FILE__))
 
@@ -22,9 +19,8 @@ unless Object.respond_to? :tap
   end
 end
 
-# require 'cassandra-model/marshal'
-# require 'cassandra-model/validations'
 require 'cassandra-model/types'
 require 'cassandra-model/callbacks'
+require 'cassandra-model/persistence'
 require 'cassandra-model/base'
 
