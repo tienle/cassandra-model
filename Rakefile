@@ -52,3 +52,39 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+
+CASSANDRA_HOME = ENV["CASSANDRA_HOME"] || "#{ENV["HOME"]}/apache-cassandra-0.6.0"
+CASSANDRA_PID  = ENV["CASSANDRA_PID"] || "/tmp/cassandra.pid".freeze
+
+cassandra_env = ""
+cassandra_env << "CASSANDRA_INCLUDE=#{File.expand_path(Dir.pwd)}/test/config/cassandra.in.sh "
+cassandra_env << "CASSANDRA_HOME=#{CASSANDRA_HOME} "
+cassandra_env << "CASSANDRA_CONF=#{File.expand_path(Dir.pwd)}/test/config"
+
+namespace :cassandra do
+  desc "Start cassandra"
+  task :start do
+    Dir.chdir(CASSANDRA_HOME) do
+      sh("env #{cassandra_env} bin/cassandra -f -p #{CASSANDRA_PID}")
+    end
+  end
+
+  desc "Stop cassandra"
+  task :stop do
+    system "kill -9 `cat #{CASSANDRA_PID}`"
+  end
+
+  desc "Restart cassandra"
+  task :restart => [:stop, :start]
+
+  desc "Clear test data"
+  task :clear_test_data do
+    unless defined?(CassandraModel)
+      $: << 'test'
+      require 'test_helper'
+    end
+    CassandraModel::Base.establish_connection('CassandraModel').clear_keyspace!
+  end
+end
+
