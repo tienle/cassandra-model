@@ -8,12 +8,14 @@ module CassandraModel
     define_callbacks :save, :create, :update, :destroy
 
     class << self
-      attr_accessor :connection
-
       def establish_connection(*args)
         @connection = Cassandra.new(*args)
-      end  
-      
+      end
+
+      def connection
+        @connection || (superclass.connection if superclass)
+      end
+
       def column_family(name = nil)
         @column_family || (@column_family = name || self.name.split('::').last)
       end
@@ -24,12 +26,12 @@ module CassandraModel
 
       def column(name, type = :string)
         columns[name] = type
-        class_eval "def #{name}; #{type.capitalize}Type.load(@attributes[:#{name}]); end"
+        class_eval "def #{name}; #{type.capitalize}Type.load(@attributes['#{name}']); end"
 
-        if [:string, :integer, :float, :datetime].include?(type)
-          class_eval "def #{name}=(value); @attributes[:#{name}] = value.to_s; end"
+        if [:string, :integer, :float].include?(type)
+          class_eval "def #{name}=(value); @attributes['#{name}'] = value.to_s; end"
         else
-          class_eval "def #{name}=(value); @attributes[:#{name}] = #{type.capitalize}Type.dump(value); end"
+          class_eval "def #{name}=(value); @attributes['#{name}'] = #{type.capitalize}Type.dump(value); end"
         end
       end
 
@@ -45,17 +47,27 @@ module CassandraModel
       def columns
         @columns ||= {}
       end
+
+    private
+
+      def inherited(child)
+        child.instance_variable_set('@connection', @connection)
+        super
+      end
     end
 
     attr_accessor :new_record
     attr_reader :key, :attributes, :errors
 
-    def initialize(attrs = {})
+    def initialize(attrs = {}, convert = true)
       @new_record = true
       @errors     = []
       @attributes = {}
-      @attributes = {}
-      self.attributes  = attrs unless attrs.empty?
+      if convert
+        self.attributes = attrs
+      else
+        @attributes     = attrs
+      end
     end
 
     def attributes=(attrs)
@@ -63,6 +75,7 @@ module CassandraModel
     end
 
     def valid?
+      @errors << "key required" if key.to_s !~ /\S/
       self.instance_eval(&self.class.validation) unless self.class.validation.nil?
       @errors.empty?
     end
@@ -70,6 +83,12 @@ module CassandraModel
     def new_record?
       @new_record
     end
+
+    def ==(other)
+      true
+    end
+
+    alias :eql? ==
   end
 
 end
