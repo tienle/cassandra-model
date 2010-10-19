@@ -28,7 +28,7 @@ module CassandraModel
         columns[name] = type
         class_eval "def #{name}; #{type.capitalize}Type.load(@attributes['#{name}']); end"
 
-        if [:string, :integer, :float].include?(type)
+        if type == :string || type == :integer || type == :float
           class_eval "def #{name}=(value); @attributes['#{name}'] = value.to_s; end"
         else
           class_eval "def #{name}=(value); @attributes['#{name}'] = #{type.capitalize}Type.dump(value); end"
