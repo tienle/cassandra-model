@@ -7,6 +7,7 @@ module CassandraModel
 
     module InstanceMethods
       def save
+        return self unless valid?
         run_callbacks :save do
           callback = new_record? ? :create : :update
           run_callbacks callback do
@@ -34,13 +35,30 @@ module CassandraModel
     end
 
     module ClassMethods
-      attr_accessor :write_consistency_level, :read_consistency_level
+      attr_writer :write_consistency_level, :read_consistency_level
+
+      def write_consistency_level(level)
+        @write_consistency_level = level
+      end
+
+      def read_consistency_level(level)
+        @read_consistency_level = level
+      end
 
       def get(key, options = {})
-        new(connection.get(key, options)).tap do |object|
-          object.key = key
+        attrs = connection.get(column_family, key, options)
+        return nil if attrs.empty?
+        new(attrs, false).tap do |object|
           object.new_record = false
         end
+      end
+
+      alias :find :get
+
+      def [](key)
+        record = get(key)
+        raise RecordNotFound, "cannot find out key=`#{key}` in `#{column_family}`" unless record
+        record
       end
 
       def all(keyrange = ''..'', options = {})
@@ -51,7 +69,7 @@ module CassandraModel
       end
 
       def first(keyrange = ''..'', options = {})
-        all(keyrange, options.merge(:limit => 1)).first  
+        all(keyrange, options.merge(:limit => 1)).first
       end
 
       def create(attributes)
@@ -61,12 +79,14 @@ module CassandraModel
       end
 
       def write(key, attributes)
-        connection.insert(column_family, key, attributes, :consistency => write_consistency_level)
+        connection.insert(column_family, key, attributes,
+                          :consistency => @write_consistency_level || Cassandra::Consistency::QUORUM)
         key
       end
 
       def remove(key)
-        connection.remove(column_family, key, :consistency => write_consistency_level)  
+        connection.remove(column_family, key,
+                          :consistency => @write_consistency_level || Cassandra::Consistency::QUORUM)
       end
     end
   end

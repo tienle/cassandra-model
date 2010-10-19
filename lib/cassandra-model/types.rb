@@ -18,11 +18,15 @@ module CassandraModel
   end
 
   class DatetimeType
+    def self.dump(v)
+      v && v.strftime('%FT%T%z')
+    end
+
     def self.load(v)
       v && ::DateTime.strptime(v, '%FT%T%z')
     end
   end
-  
+
   class JsonType
     def self.dump(v)
       v && ::JSON.dump(v)

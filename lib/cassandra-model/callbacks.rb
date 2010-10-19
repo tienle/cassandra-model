@@ -12,7 +12,7 @@ module CassandraModel
             callback_name = "#{chain}_#{callback}"
             instance_eval <<-EVAL, __FILE__, __LINE__ + 1
               def #{callback_name}(*args)
-                callbacks[:#{callback_name}] += args 
+                callbacks[:#{callback_name}] += args
               end
             EVAL
           end
@@ -32,15 +32,15 @@ module CassandraModel
         result
       end
 
-      private 
+      private
       def _run_callbacks(chain, name, value = nil)
         callback_name = "#{chain}_#{name}".to_sym
         self.class.callbacks[callback_name].each do |callback|
-          next unless callback.is_a? Symbol 
+          next unless callback.is_a? Symbol
           if self.class.instance_method(callback).arity > 0
-            send(callback, value) 
+            self.send(callback, value)
           else
-            send(callback) 
+            self.send(callback)
           end
         end
       end

@@ -102,7 +102,6 @@
       -->
       <ColumnFamily Name="Users" CompareWith="BytesType" KeysCached="100000" RowsCached="1000"/>
       <ColumnFamily Name="Posts" CompareWith="BytesType" />
-      <ColumnFamily Name="Tags" CompareWith="TimeUUIDType" />
       <ColumnFamily Name="Comments" CompareWith="TimeUUIDType" CompareSubcolumnsWith="BytesType" ColumnType="Super" />
 
       <!--

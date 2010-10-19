@@ -8,6 +8,7 @@ module CassandraModel
   class CassandraModelError < StandardError;       end
   class UnknownRecord       < CassandraModelError; end
   class InvalidRecord       < CassandraModelError; end
+  class RecordNotFound      < CassandraModelError; end
 end
 
 unless Object.respond_to? :tap
