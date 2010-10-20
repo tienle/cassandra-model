@@ -23,71 +23,48 @@ private
   end
 end
 
-class Post < CassandraModel::Base
-  column_family :Posts
-
-  key :slug
-  column :title
-  column :content
-  column :author
-  column :tags
-
-  after_create :create_tags
-
-end
-
-class Comment < CassandraModel::Base
-  column_family :Comments
-  key :slug
-end
-
 class CassandraModelTest < Test::Unit::TestCase
   context "CassandraModel" do
     setup do
-      @connection = CassandraModel::Base.establish_connection('CassandraModel')
+      @connection = CassandraModel::Base.establish_connection("CassandraModel")
       @connection.clear_keyspace!
+
+      @user = User.create(:username => "tl", :full_name => "tien le")
     end
 
     should "be able to connect to Cassandra" do
       assert_kind_of Cassandra, @connection
-
-      @connection.insert(:Users, 'tl', {'firstname' => 'tien'})
-      assert_equal({'firstname' => 'tien'}, @connection.get(:Users, 'tl'))
-
-      @connection.remove(:Users, 'tl')
+      assert_equal "CassandraModel", @connection.keyspace
     end
 
     should "not create a new user when validation fails" do
-      user = User.create(:username => 'tl')
+      user = User.create(:username => "tl")
       assert !user.valid?
       assert user.new_record?
 
-      user = User.new(:username => 'tl').save
+      user = User.new(:username => "tl").save
       assert user.new_record?
       assert_equal "full name required", user.errors.first
 
-      user = User.new(:full_name => 'tl').save
+      user = User.new(:full_name => "tl").save
       assert_equal "key required", user.errors.first
     end
 
     should "create a new user when validation passed" do
-      user = User.create(:username => 'tl', :full_name => 'tien le')
-      assert !user.new_record?
-      assert_equal user, User.get('tl')
-      assert user.eql?(User.get('tl'))
-      assert_equal 'tien le', User.get('tl').full_name
+      assert !@user.new_record?
+      assert @user.eql?(User.get("tl"))
+      assert_equal @user, User.get("tl")
+      assert_equal "tien le", User.get("tl").full_name
 
-      user = User.new(:username => 'abc', :full_name => 'Foo')
+      user = User.new(:username => "abc", :full_name => "Foo")
       user.save
-      assert_equal ['created_at', 'full_name'], @connection.get(:Users, 'abc').keys
+      assert_equal ["created_at", "full_name"], @connection.get(:Users, "abc").keys
     end
 
     should "destroy a record" do
-      user = User.create(:username => 'foo', :full_name => 'foo')
-      user.destroy
-      assert @connection.get(:Users, 'foo').empty?
-      assert User.get('foo').nil?
-      assert_raise(CassandraModel::RecordNotFound) { User['foo'] }
+      @user.destroy
+      assert User.get("tl").nil?
+      assert_raise(CassandraModel::RecordNotFound) { User["tl"] }
     end
   end
 end

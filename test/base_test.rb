@@ -4,16 +4,14 @@ class CassandraModelCallbacksTest < Test::Unit::TestCase
   context "CassandraModel::Base" do
     setup do
       @klass = Class.new(CassandraModel::Base) do
-        column :name, :string
+        key :name
         column :age, :integer
         column :dob, :datetime
         column :note, :json
 
         validate do
-          errors << "name required" if name.nil?
-          errors << "dob required" if dob.nil?
+          self.errors << "dob required" if dob.nil?
         end
-          
       end
 
       @klass.establish_connection 'cassandra-model'
@@ -24,21 +22,23 @@ class CassandraModelCallbacksTest < Test::Unit::TestCase
     end
 
     should "store all defined columns" do
-      assert_equal({:name => :string  , \
-                    :age  => :integer , \
-                    :dob  => :datetime, \
+      assert_equal({:age  => :integer ,
+                    :dob  => :datetime,
                     :note => :json}   , @klass.columns)
     end
 
     should "validate model by provided block" do
       assert_kind_of Proc, @klass.validation
+
       model = @klass.new()
       assert !model.valid?
+
       model = @klass.new(:name => "tl")
       assert !model.valid?
+
       model = @klass.new(:name => "tl", :dob => DateTime.now)
       assert model.valid?
-      assert_equal "tl", model.name
+      assert_equal "tl", model.key
       assert_kind_of DateTime, model.dob
     end
   end
