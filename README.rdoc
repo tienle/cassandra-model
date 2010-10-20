@@ -1,16 +1,54 @@
 = cassandra-model
 
-Description goes here.
+Simple model support for Cassandra (http://github.com/fauna/cassandra)
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+Currently, it supports:
+  * Serialisation (<tt>String</tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>DateTime</tt>, <tt>JSON</tt>)
+  * Callbacks
+  * Validations
+
+== Getting started
+
+
+== Define
+  require 'cassandra-model'
+
+  class User << CassandraModel::Base
+    column_family :Users
+
+    key :username
+    column :full_name
+    column :created, :datetime
+    column :profile, :json
+
+    write_consistency_level Cassandra::Consistency::ALL
+    before_save :set_created_at
+
+    validation do
+      errors << "full name required" if full_name.blank?
+    end
+
+  private
+
+    def set_created_at
+      self.created = Time.now
+    end
+  end
+
+
+== CRUD
+  User.create(:username => 'foo', :full_name => 'foo bar')
+
+  foo = User.new(:username => 'foo', :full_name => 'foo bar')
+  foo.save
+
+  foo.full_name = 'foo baz'
+  foo.save
+
+  foo = User['foo']
+  foo = User.get('foo')
+
+  foo.destroy
 
 == Copyright
 
