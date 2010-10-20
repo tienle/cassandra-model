@@ -3,12 +3,12 @@
 Simple model support for Cassandra (http://github.com/fauna/cassandra)
 
 Currently, it supports:
-  * Serialisation (<tt>String</tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>DateTime</tt>, <tt>JSON</tt>)
-  * Callbacks
-  * Validations
+* Serialisation (_String_, _Integer_, _Float_, _Boolean_, _DateTime_, _JSON_)
+* Callbacks
+* Validations
 
 == Getting started
-
+  Updating...
 
 == Define
   require 'cassandra-model'
