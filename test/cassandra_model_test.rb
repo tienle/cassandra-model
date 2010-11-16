@@ -66,5 +66,10 @@ class CassandraModelTest < Test::Unit::TestCase
       assert User.get("tl").nil?
       assert_raise(CassandraModel::RecordNotFound) { User["tl"] }
     end
+
+    should "return true if record exists and otherwise" do
+      assert User.exists?("tl")
+      assert !User.exists?("foo")
+    end
   end
 end
