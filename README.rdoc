@@ -8,7 +8,8 @@ Currently, it supports:
 * Validations
 
 == Getting started
-  Updating...
+
+  gem install cassandra-model
 
 == Define
   require 'cassandra-model'
