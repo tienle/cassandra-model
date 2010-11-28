@@ -71,7 +71,7 @@ module CassandraModel
     end
 
     def attributes=(attrs)
-      attrs.each {|k, v| send("#{k}=", v) }
+      attrs.each {|k, v| send("#{k}=", v) if respond_to? "#{k}=".to_sym }
     end
 
     def valid?

@@ -7,8 +7,8 @@ begin
     gem.name = "cassandra-model"
     gem.summary = %Q{Minimal models for Cassandra.}
     gem.description = %Q{Cassandra-model allows you to map ColumnFamily/SuperColumnFamily in Cassandra to Ruby objects. It was designed to be fast and simple.}
-    gem.email = "tienlx@gmail.com"
-    gem.homepage = "http://github.com/infinity42/cassandra-model"
+    gem.email = "tienlx /at/ gmail /dot/ com"
+    gem.homepage = "http://github.com/tienle/cassandra-model"
     gem.authors = ["Tien Le"]
     gem.add_development_dependency "shoulda", ">= 0"
     gem.add_development_dependency "cassandra", ">= 0"

@@ -71,5 +71,11 @@ class CassandraModelTest < Test::Unit::TestCase
       assert User.exists?("tl")
       assert !User.exists?("foo")
     end
+
+    should "only take defined attributes" do
+      user = User.new(:username => "abc", :full_name => "Foo", :hachiko => 'dog')
+      user.save
+      assert_equal ["created_at", "full_name"], @connection.get(:Users, "abc").keys
+    end
   end
 end
