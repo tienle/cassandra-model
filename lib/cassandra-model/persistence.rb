@@ -60,6 +60,8 @@ module CassandraModel
         new(attrs, false).tap do |object|
           object.new_record = false
         end
+      rescue
+        nil
       end
 
       alias :find :get

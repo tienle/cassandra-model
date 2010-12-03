@@ -64,7 +64,10 @@ class CassandraModelTest < Test::Unit::TestCase
     should "destroy a record" do
       @user.destroy
       assert User.get("tl").nil?
+      assert User.get(nil).nil?
+
       assert_raise(CassandraModel::RecordNotFound) { User["tl"] }
+      assert_raise(CassandraModel::RecordNotFound) { User[nil] }
     end
 
     should "return true if record exists and otherwise" do
