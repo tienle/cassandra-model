@@ -21,7 +21,10 @@ module CassandraModel
       end
 
       def key(name)
-        class_eval "def #{name}=(value); @key = value.to_s; end"
+        class_eval <<-EVAL, __FILE__, __LINE__ + 1
+          def #{name}=(value); @key = value.to_s; end
+          def #{name}; @key; end
+        EVAL
       end
 
       def column(name, type = :string)
