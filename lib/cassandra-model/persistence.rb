@@ -58,6 +58,7 @@ module CassandraModel
         attrs = connection.get(column_family, key, options)
         return nil if attrs.empty?
         new(attrs, false).tap do |object|
+          object.key = key
           object.new_record = false
         end
       rescue

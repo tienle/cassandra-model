@@ -59,8 +59,8 @@ module CassandraModel
       end
     end
 
-    attr_accessor :new_record
-    attr_reader :key, :attributes, :errors
+    attr_accessor :key, :new_record
+    attr_reader :attributes, :errors
 
     def initialize(attrs = {}, convert = true)
       @new_record = true
