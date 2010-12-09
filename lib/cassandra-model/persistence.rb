@@ -38,8 +38,8 @@ module CassandraModel
     private
 
       def write(attrs)
-        self.class.write(key, attrs)
         @new_record = false
+        self.class.write(key, attrs)
       end
     end
 
