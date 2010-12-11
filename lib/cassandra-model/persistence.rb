@@ -40,6 +40,7 @@ module CassandraModel
       def write(attrs)
         @new_record = false
         self.class.write(key, attrs)
+        self
       end
     end
 
