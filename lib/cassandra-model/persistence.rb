@@ -27,7 +27,7 @@ module CassandraModel
       end
 
       def update_attributes(attrs)
-        attributes = attrs
+        self.attributes = attrs
         save
       end
 
@@ -38,8 +38,8 @@ module CassandraModel
     private
 
       def write(attrs)
-        @new_record = false
         self.class.write(key, attrs)
+        @new_record = false
         self
       end
     end
