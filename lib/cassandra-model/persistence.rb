@@ -75,8 +75,11 @@ module CassandraModel
       end
 
       def exists?(key)
+        return false if key.nil? || key == ''
         #connection.exists?(column_family, key)
         !connection.get(column_family, key).empty?
+      rescue
+        false
       end
 
       def all(keyrange = ''..'', options = {})
