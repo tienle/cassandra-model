@@ -1,4 +1,4 @@
-require 'cassandra'
+require 'cassandra/0.7'
 require 'forwardable'
 require 'date'
 

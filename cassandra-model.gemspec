@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cassandra-model}
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tien Le"]
-  s.date = %q{2010-12-22}
+  s.date = %q{2011-01-23}
   s.description = %q{Cassandra-model allows you to map ColumnFamily/SuperColumnFamily in Cassandra to Ruby objects. It was designed to be fast and simple.}
   s.email = %q{tienlx /at/ gmail /dot/ com}
   s.extra_rdoc_files = [
@@ -33,8 +33,9 @@ Gem::Specification.new do |s|
      "test/callbacks_test.rb",
      "test/cassandra_model_test.rb",
      "test/config/cassandra.in.sh",
+     "test/config/cassandra.yaml",
+     "test/config/log4j-server.properties",
      "test/config/log4j-tools.properties",
-     "test/config/log4j.properties",
      "test/config/storage-conf.xml",
      "test/test_helper.rb"
   ]

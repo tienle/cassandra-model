@@ -114,6 +114,10 @@ module CassandraModel
         connection.remove(column_family, key, column,
                           :consistency => @write_consistency_level || Cassandra::Consistency::QUORUM)
       end
+
+      def truncate!
+        connection.truncate!(column_family.to_s)
+      end
     end
   end
 end

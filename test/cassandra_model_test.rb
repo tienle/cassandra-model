@@ -80,5 +80,11 @@ class CassandraModelTest < Test::Unit::TestCase
       user.save
       assert_equal ["created_at", "full_name"], @connection.get(:Users, "abc").keys
     end
+
+    should "truncate the column family" do
+      assert !User.all.empty?
+      User.truncate!
+      assert User.all.empty?
+    end
   end
 end

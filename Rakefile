@@ -54,7 +54,7 @@ Rake::RDocTask.new do |rdoc|
 end
 
 
-CASSANDRA_HOME = ENV["CASSANDRA_HOME"] || "#{ENV["HOME"]}/apache-cassandra-0.6.0"
+CASSANDRA_HOME = ENV["CASSANDRA_HOME"] || "#{ENV["HOME"]}/apache-cassandra"
 CASSANDRA_PID  = ENV["CASSANDRA_PID"] || "/tmp/cassandra.pid".freeze
 
 cassandra_env = ""
