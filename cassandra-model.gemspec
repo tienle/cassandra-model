@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cassandra-model}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tien Le"]
-  s.date = %q{2011-01-23}
+  s.date = %q{2011-04-18}
   s.description = %q{Cassandra-model allows you to map ColumnFamily/SuperColumnFamily in Cassandra to Ruby objects. It was designed to be fast and simple.}
   s.email = %q{tienlx /at/ gmail /dot/ com}
   s.extra_rdoc_files = [

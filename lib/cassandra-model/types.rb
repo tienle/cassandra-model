@@ -39,11 +39,11 @@ module CassandraModel
 
   class BooleanType
     def self.dump(v)
-      v == '1'
+      v ? '1' : '0'
     end
 
     def self.load(v)
-      v ? '1' : '0'
+      v == '1'
     end
   end
 end
