@@ -88,7 +88,11 @@ module CassandraModel
     end
 
     def ==(other)
-      true
+      if other.respond_to? :key
+        self.key == other.key
+      else
+        false
+      end
     end
 
     alias :eql? ==
