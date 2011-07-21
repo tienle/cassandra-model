@@ -3,7 +3,7 @@ module CassandraModel
     def self.load(v)
       return '' unless v
       s = v.to_s
-      s.force_encoding('UTF-8') if (RUBY_VERSION > '1.9' && s.encoding.name.downcase != 'utf-8')
+      s.clone.force_encoding('UTF-8') if (RUBY_VERSION > '1.9' && s.encoding.name.downcase != 'utf-8')
       s
     end
   end
