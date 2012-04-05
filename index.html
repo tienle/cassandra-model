@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cassandra-model : Minimal models for cassandra" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Cassandra-model</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/tienle/cassandra-model">Fork Me on GitHub</a>
+
+          <h1 id="project_title">Cassandra-model</h1>
+          <h2 id="project_tagline">Minimal models for cassandra</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/tienle/cassandra-model/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/tienle/cassandra-model/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>cassandra-model</h1>
+
+<p>Simple model support for Cassandra (<a href="http://github.com/fauna/cassandra">http://github.com/fauna/cassandra</a>)</p>
+
+<p>Currently, it supports:</p>
+
+<ul>
+<li>Serialisation (<em>String</em>, <em>Integer</em>, <em>Float</em>, <em>Boolean</em>, <em>DateTime</em>, <em>JSON</em>)</li>
+<li>Callbacks</li>
+<li>Validations</li>
+</ul><h2>Getting started</h2>
+
+<div class="highlight">
+<pre>  gem install cassandra-model
+</pre>
+</div>
+
+
+<h2>Define</h2>
+
+<div class="highlight">
+<pre>  <span class="nb">require</span> <span class="s1">'cassandra-model'</span>
+
+  <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;&lt;</span> <span class="no">CassandraModel</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">column_family</span> <span class="ss">:Users</span>
+
+    <span class="n">key</span> <span class="ss">:username</span>
+    <span class="n">column</span> <span class="ss">:full_name</span>
+    <span class="n">column</span> <span class="ss">:created</span><span class="p">,</span> <span class="ss">:datetime</span>
+    <span class="n">column</span> <span class="ss">:profile</span><span class="p">,</span> <span class="ss">:json</span>
+
+    <span class="n">write_consistency_level</span> <span class="no">Cassandra</span><span class="o">::</span><span class="no">Consistency</span><span class="o">::</span><span class="no">ALL</span>
+    <span class="n">before_save</span> <span class="ss">:set_created_at</span>
+
+    <span class="n">validation</span> <span class="k">do</span>
+      <span class="n">errors</span> <span class="o">&lt;&lt;</span> <span class="s2">"full name required"</span> <span class="k">if</span> <span class="n">full_name</span><span class="o">.</span><span class="n">blank?</span>
+    <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+    <span class="k">def</span> <span class="nf">set_created_at</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">created</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>CRUD</h2>
+
+<div class="highlight">
+<pre>  <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="ss">:full_name</span> <span class="o">=&gt;</span> <span class="s1">'foo bar'</span><span class="p">)</span>
+
+  <span class="n">foo</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="ss">:full_name</span> <span class="o">=&gt;</span> <span class="s1">'foo bar'</span><span class="p">)</span>
+  <span class="n">foo</span><span class="o">.</span><span class="n">save</span>
+
+  <span class="n">foo</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="s1">'foo baz'</span>
+  <span class="n">foo</span><span class="o">.</span><span class="n">save</span>
+
+  <span class="n">foo</span> <span class="o">=</span> <span class="no">User</span><span class="o">[</span><span class="s1">'foo'</span><span class="o">]</span>
+  <span class="n">foo</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>
+
+  <span class="n">foo</span><span class="o">.</span><span class="n">destroy</span>
+</pre>
+</div>
+
+
+<h2>Copyright</h2>
+
+<p>Copyright (c) 2010 Tien Le. See LICENSE for details.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cassandra-model maintained by <a href="https://github.com/tienle">tienle</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
